@@ -1,44 +1,57 @@
 <?php
 
-include_once './depense.php';
-include_once './depense_mensuelle.php';
-include_once './paiement.php';
+include_once "./depense.php";
+include_once "./depense_mensuelle.php";
+include_once "./paiement.php";
+include_once "./calendar.php";
 
-const FORMAT = 'Y-m-d';
-const EPOCH_PAYDAY = '2024-09-19';
+const FORMAT = "Y-m-d";
+const EPOCH_PAYDAY = "2024-09-19";
 const MONTHS = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
 ];
 
-function due_date_month(DateTime $current_date, int $due_day): int {
-    $day = intval($current_date->format('j'));
+function due_date_month(DateTime $current_date, int $due_day): int
+{
+    $day = intval($current_date->format("j"));
     if ($day > $due_day) {
-        return intval($current_date->format('n')); // next month
+        return intval($current_date->format("n")); // next month
     }
-    return intval($current_date->format('n')) - 1; // present month
+    return intval($current_date->format("n")) - 1; // present month
 }
 
 $payday = new DateTime(EPOCH_PAYDAY);
-$today = new DateTime('now');
+$today = new DateTime("now");
 $i = 0;
 
+// $cal = new Calendar($today->format("m"), $today->format("y"));
+const LOOP_UPPER_BOUND_LIMIT = 25;
+
 do {
-    $payday->add(new DateInterval('P14D'));
-    
+    $payday->add(new DateInterval("P14D"));
+
     $i += 1;
-    if ($i > 18) {
-        die('hey!');
+    if ($i > LOOP_UPPER_BOUND_LIMIT) {
+        die("Securely break the loop.");
     }
-}
-while ($payday < $today);
+} while ($payday < $today);
 
 $next_pay_day = $payday;
-$last_payday = (clone $payday)->sub(new DateInterval('P14D'));
+$last_payday = (clone $payday)->sub(new DateInterval("P14D"));
 
 // $depenses_mensuelles = [];
-include_once './budget.php';
-
+include_once "./budget.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,9 +89,11 @@ include_once './budget.php';
 </head>
 <body>
     <h2>
-        Last: <?= $last_payday->format(FORMAT) ?>
-        Next: <?= $next_pay_day->format(FORMAT) ?></h2>
-    
+        Dernière paie: <?= $last_payday->format(FORMAT) ?><br>
+        Prochaine paie: <?= $next_pay_day->format(FORMAT) ?></h2>
+
+    <?# $cal ?>
+
     <table>
         <thead>
             <tr>
@@ -89,16 +104,24 @@ include_once './budget.php';
             </tr>
         </thead>
         <tbody>
-            <?php 
+            <?php
             $total_depenses_du_mois = 0;
             $total_restant_mois = 0;
             ?>
             <?php foreach ($depenses_mensuelles as $nickname => $depense) { ?>
             <tr>
-                <td><?= strtr($nickname, '_', ' ') ?></td>
-                <td class="money"><?= number_format($depense->montant, 2) ?>&nbsp;$</td>
-                <td class="money"><?= number_format($depense->restant, 2) ?>&nbsp;$</td>
-                <td><?= $depense->jour_du_mois ?> <?= MONTHS[due_date_month($today, $depense->jour_du_mois)] ?></td>
+                <td><?= strtr($nickname, "_", " ") ?></td>
+                <td class="money"><?= number_format(
+                    $depense->montant,
+                    2
+                ) ?>&nbsp;$</td>
+                <td class="money"><?= number_format(
+                    $depense->restant,
+                    2
+                ) ?>&nbsp;$</td>
+                <td><?= $depense->jour_du_mois ?> <?= MONTHS[
+                    due_date_month($today, $depense->jour_du_mois)
+                ] ?></td>
             </tr>
             <?php
             $total_depenses_du_mois += $depense->montant;
@@ -107,8 +130,14 @@ include_once './budget.php';
             <?php } ?>
             <tr>
                 <td></td>
-                <td class="money"><?= number_format($total_depenses_du_mois, 2) ?>&nbsp;$</td>
-                <td class="money"><?= number_format($total_restant_mois, 2) ?>&nbsp;$</td>
+                <td class="money"><?= number_format(
+                    $total_depenses_du_mois,
+                    2
+                ) ?>&nbsp;$</td>
+                <td class="money"><?= number_format(
+                    $total_restant_mois,
+                    2
+                ) ?>&nbsp;$</td>
                 <td></td>
             </tr>
         </tbody>
