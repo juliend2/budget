@@ -2,6 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use Julien\Budget\DepensesMensuelles;
 use Julien\Budget\DepenseMensuelle;
 // use Julien\Budget\Depense;
 use Julien\Budget\Paiement;
@@ -51,8 +52,7 @@ do {
 $next_pay_day = $payday;
 $last_payday = (clone $payday)->sub(new DateInterval("P14D"));
 
-// $depenses_mensuelles = [];
-include_once "./budget.php";
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +109,7 @@ include_once "./budget.php";
             $total_depenses_du_mois = 0;
             $total_restant_mois = 0;
             ?>
-            <?php foreach ($depenses_mensuelles as $nickname => $depense) { ?>
+            <?php foreach ($depenses as $nickname => $depense) { ?>
             <tr>
                 <td><?= strtr($nickname, "_", " ") ?></td>
                 <td class="money"><?= number_format(
