@@ -1,9 +1,10 @@
 <?php
 
-include_once "./depense.php";
-include_once "./depense_mensuelle.php";
-include_once "./paiement.php";
-include_once "./calendar.php";
+require __DIR__ . '/vendor/autoload.php';
+
+use Julien\Budget\DepenseMensuelle;
+// use Julien\Budget\Depense;
+use Julien\Budget\Paiement;
 
 const FORMAT = "Y-m-d";
 const EPOCH_PAYDAY = "2024-09-19";

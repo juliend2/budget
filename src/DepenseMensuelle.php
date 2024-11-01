@@ -1,4 +1,7 @@
 <?php
+namespace Julien\Budget;
+
+use Julien\Budget\Paiement;
 
 class DepenseMensuelle extends Depense {
     protected int $jour_du_mois;
@@ -23,7 +26,7 @@ class DepenseMensuelle extends Depense {
         } elseif (method_exists($this, $name)) {
             return $this->{$name}();
         } else {
-            throw new Exception("No property named $name");
+            throw new \Exception("No property named $name");
         }
     }
 
