@@ -4,8 +4,10 @@ require __DIR__ . '/vendor/autoload.php';
 
 use Julien\Budget\DepensesMensuelles;
 use Julien\Budget\DepenseMensuelle;
+use Julien\Budget\DBConnection;
 // use Julien\Budget\Depense;
 use Julien\Budget\Paiement;
+use Julien\Budget\Repositories\DepenseRepository;
 
 const FORMAT = "Y-m-d";
 const EPOCH_PAYDAY = "2024-09-19";
@@ -23,6 +25,11 @@ const MONTHS = [
     "November",
     "December",
 ];
+
+$db = new DBConnection('./database.sqlite');
+$depenses = new DepenseRepository($db);
+
+$depenses->createTable();
 
 function due_date_month(DateTime $current_date, int $due_day): int
 {

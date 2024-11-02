@@ -1,9 +1,11 @@
 <?php
 namespace Julien\Budget;
 
+use Julien\Budget\GettableTrait;
 use Julien\Budget\Paiement;
 
 class DepenseMensuelle extends Depense {
+    use GettableTrait;
     protected int $jour_du_mois;
 
     /**
